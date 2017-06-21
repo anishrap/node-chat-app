@@ -15,24 +15,24 @@ app.use(express.static(publicPath));
 io.on('connection', function (socket) {
   console.log('New User Connected!');
 
-  socket.emit('newEmail', {
-    "from": "Mike@example.com",
-    "text": "Hey, what's going on",
-    "createdAt": 123
-  });
-
   socket.emit('newMessage', {
-    "from": "anish@example.com",
-    "text": "Hello",
-    "createdAt": 155
+    from: 'Admin',
+    text: 'Welcome to the Chat App!'
   });
 
-  socket.on('createEmail', function (email) {
-    console.log('create Email', email);
+  socket.broadcast.emit('newMessage', {
+    from: 'Admin',
+    text: 'New User Joined'
   });
 
   socket.on('createMessage', function (message) {
     console.log('created Message', message);
+
+    io.emit('newMessage', {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    });
   });
 
   socket.on('disconnect', function () {
